@@ -20,41 +20,72 @@ const formatDate = (date: Date) => {
     <meta name="viewport" content="width=device-width" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
-    <style>
+    <style is:global>
       :root {
-        --bg-color: #ffffff;
-        --text-color: #111111;
-        --muted-text: #888888;
+        --bg-color: #2C3E56 !important;
+        --text-color: #F4F1EA !important;
+        --muted-text: #A4B5C6 !important;
+        --accent-white: #F4F1EA !important;
         --max-width: 650px;
       }
       body {
         margin: 0;
         padding: 2rem 1.5rem 6rem 1.5rem;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-color);
+        background-color: var(--bg-color) !important;
+        color: var(--text-color) !important;
         display: flex;
         justify-content: center;
       }
+
+      /* Universal high-contrast inverted text selection */
+      *::selection, ::selection {
+        background-color: #F4F1EA !important;
+        color: #2C3E56 !important;
+        text-shadow: none !important;
+      }
+
+      *::-moz-selection, ::-moz-selection {
+        background-color: #F4F1EA !important;
+        color: #2C3E56 !important;
+        text-shadow: none !important;
+      }
+
+      .prose *, .prose p::selection, .prose::selection {
+        background-color: #F4F1EA !important;
+        color: #2C3E56 !important;
+      }
+
+      /* Prevent static selector styling from reversing actual article page colors */
+      .prose * {
+        background-color: transparent !important;
+        color: var(--text-color) !important;
+      }
+
       main { width: 100%; max-width: var(--max-width); }
       header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding-bottom: 1.5rem;
-        border-bottom: 1px solid #eaeaea;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
         margin-bottom: 4rem;
       }
       header .logo { font-size: 1.35rem; font-family: Georgia, serif; }
       header .logo a { color: inherit; text-decoration: none; }
       header nav a { color: var(--muted-text); text-decoration: none; font-size: 0.9rem; margin-left: 1.5rem; }
       
+      h1, h2, h3, h4, h5, h6 {
+        color: var(--text-color) !important;
+      }
+
       h1 { font-family: Georgia, serif; font-size: 2.5rem; font-weight: 400; margin: 0 0 0.5rem 0; line-height: 1.2; }
       .date { color: var(--muted-text); font-size: 0.95rem; margin-bottom: 2rem; }
       
       .prose {
         line-height: 1.6;
         font-size: 1.1rem;
+        color: var(--text-color) !important;
       }
       .prose p {
         margin: 0 0 1.5rem 0;
@@ -67,7 +98,7 @@ const formatDate = (date: Date) => {
       footer {
         margin-top: 6rem;
         padding-top: 1.5rem;
-        border-top: 1px solid #eaeaea;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
         color: var(--muted-text);
         font-size: 0.9rem;
         display: flex;
