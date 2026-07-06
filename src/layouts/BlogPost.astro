@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import SandBackground from '../components/SandBackground.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
@@ -108,12 +109,13 @@ const formatDate = (date: Date) => {
     </style>
   </head>
   <body>
+    <SandBackground />
     <main>
       <header>
         <div class="logo"><a href="/">Hadi</a></div>
         <nav>
           <a href="/">Home</a>
-          <a href="https://x.com/HadiAlk4">@HadiAlk4</a>
+          <a href="https://x.com/HadiAlk4">@X</a>
         </nav>
       </header>
 
@@ -135,7 +137,7 @@ const formatDate = (date: Date) => {
       </article>
 
       <footer>
-        <div>&copy; {new Date().getFullYear()} Hadi.</div>
+        <div>&copy;{new Date().getFullYear()} Hadi.</div>
         <div><a href="/">Back to all posts</a></div>
       </footer>
     </main>

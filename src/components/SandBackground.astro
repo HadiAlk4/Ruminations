@@ -1,0 +1,63 @@
+---
+---
+
+<canvas id="sand-canvas"></canvas>
+
+<style>
+  #sand-canvas {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 500px;
+    height: 100vh;
+    pointer-events: none; /* Allows text selection and clicks to pass through */
+    z-index: 10;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById('sand-canvas') as HTMLCanvasElement;
+  const ctx = canvas?.getContext('2d');
+
+  if (canvas && ctx) {
+    let width = (canvas.width = 500);
+    let height = (canvas.height = window.innerHeight);
+
+    window.addEventListener('resize', () => {
+      height = canvas.height = window.innerHeight;
+    });
+
+    // Configuration: 250 micro-grains, slow fall speed (0.2), no horizontal drift
+    const particleCount = 250;
+    const particles = Array.from({ length: particleCount }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 0.6 + 0.4, // Micro-grains: 0.4px to 1.0px only
+      speed: Math.random() * 0.15 + 0.15, // Ultra-slow ambient fall (~0.2 average)
+      opacity: Math.random() * 0.15 + 0.15, // Subtle transparency (~0.3 max)
+    }));
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      particles.forEach((p) => {
+        p.y += p.speed;
+        // Reset to top when particle falls off screen
+        if (p.y > height) {
+          p.y = -5;
+          p.x = Math.random() * width;
+        }
+
+        // Use theme Muted Slate-Blue (#A4B5C6 -> RGB: 164, 181, 198) for organic blending
+        ctx.fillStyle = `rgba(164, 181, 198, ${p.opacity})`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  }
+</script>

@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import SandBackground from '../components/SandBackground.astro';
 
 // Fetch the posts
 const allPosts = await getCollection('blog');
@@ -145,9 +146,10 @@ const formatDate = (date: Date) => {
     </style>
   </head>
   <body>
+    <SandBackground />
     <main>
       <header>
-        <div class="logo"><a href="/">Hadi</a></div>
+        <div class="logo"><a href="/">Hadi A</a></div>
         <p class="bio"></p>
         <nav>
           <a href="https://x.com/HadiAlk4">@X</a>
