@@ -49,10 +49,21 @@ const formatDate = (date: Date) => {
       h1 { font-family: Georgia, serif; font-size: 3rem; font-weight: 400; margin: 0 0 0.5rem 0; }
       .post-count { color: var(--muted-text); font-size: 0.95rem; margin-bottom: 3.5rem; }
       .post-list { display: flex; flex-direction: column; gap: 2.2rem; }
-      .post-item { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
+      .post-item {
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: inherit;
+        padding-left: 0.8rem;
+        border-left: 2px solid transparent;
+        transition: border-color 0.2s ease;
+      }
+      .post-item:hover {
+        border-left: 2px solid var(--text-color);
+      }
       .post-date { color: var(--muted-text); font-size: 0.85rem; margin-bottom: 0.2rem; }
       .post-title { font-size: 1.15rem; font-weight: 600; margin: 0; }
-      .post-item:hover .post-title { text-decoration: underline; }
+      .post-item:hover .post-title { text-decoration: none; }
     </style>
   </head>
   <body>
