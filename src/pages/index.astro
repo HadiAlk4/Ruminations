@@ -19,6 +19,7 @@ const formatDate = (date: Date) => {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>All Posts</title>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
     <style>
       :root {
         --bg-color: #ffffff;
@@ -37,16 +38,52 @@ const formatDate = (date: Date) => {
       }
       main { width: 100%; max-width: var(--max-width); }
       header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-bottom: 1.5rem;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        padding-bottom: 2.5rem;
         border-bottom: 1px solid #eaeaea;
         margin-bottom: 4rem;
+        width: 100%;
       }
-      header .logo { font-size: 1.35rem; font-family: Georgia, serif; }
-      header nav a { color: var(--muted-text); text-decoration: none; font-size: 0.9rem; margin-left: 1.5rem; }
-      h1 { font-family: Georgia, serif; font-size: 3rem; font-weight: 400; margin: 0 0 0.5rem 0; }
+      header .logo { 
+        font-size: 6.5rem; 
+        font-family: 'EB Garamond', Georgia, serif; 
+        font-weight: 500; 
+        letter-spacing: -0.02em; 
+        line-height: 1.1; 
+        margin-bottom: 0.8rem; 
+      }
+      header .logo a { 
+        color: var(--text-color); 
+        text-decoration: none; 
+      }
+      header .bio { 
+        color: var(--muted-text); 
+        font-size: 1rem; 
+        margin: 0 0 1.5rem 0; 
+        max-width: 450px; 
+      }
+      header nav { 
+        display: flex !important; 
+        flex-direction: row !important;
+        gap: 1.5rem; 
+        flex-wrap: wrap; 
+        justify-content: center !important; 
+        width: 100%;
+      }
+      header nav a { 
+        color: var(--muted-text); 
+        text-decoration: none; 
+        font-size: 0.9rem; 
+        margin: 0 !important; 
+        transition: color 0.2s ease; 
+      }
+      header nav a:hover { 
+        color: var(--text-color); 
+      }
+      h1 { font-family: 'EB Garamond', Georgia, serif; font-size: 3rem; font-weight: 400; margin: 0 0 0.5rem 0; }
       .post-count { color: var(--muted-text); font-size: 0.95rem; margin-bottom: 3.5rem; }
       .post-list { display: flex; flex-direction: column; gap: 2.2rem; }
       .post-item {
@@ -69,11 +106,11 @@ const formatDate = (date: Date) => {
   <body>
     <main>
       <header>
-        <div class="logo">Hadi</div>
+        <div class="logo"><a href="/">Hadi</a></div>
         <nav>
-		<a href="https://github.com/HadiAlk4">GitHub</a>
-        <a href="https://x.com/HadiAlk4">@HadiAlk4</a>
-		<a href="www.linkedin.com/in/hadialkhub">LinkedIn</a>
+          <a href="https://x.com/HadiAlk4">@X</a>
+          <a href="https://github.com/HadiAlk4">GitHub</a>
+          <a href="https://www.linkedin.com/in/hadialkhub">LinkedIn</a>
         </nav>
       </header>
 
