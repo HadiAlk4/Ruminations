@@ -1,26 +1,13 @@
 ---
-import { getCollection } from 'astro:content';
 import SandBackground from '../components/SandBackground.astro';
 import Analytics from '@vercel/analytics/astro';
-
-// Fetch the posts
-const allPosts = await getCollection('blog');
-const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-const formatDate = (date: Date) => {
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-};
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>All Posts</title>
+    <title>Projects</title>
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
     <Analytics />
     <style is:global>
@@ -41,7 +28,6 @@ const formatDate = (date: Date) => {
         justify-content: center;
       }
 
-      /* High-contrast inverted text selection */
       ::selection {
         background-color: #F4F1EA !important;
         color: #2C3E56 !important;
@@ -65,13 +51,13 @@ const formatDate = (date: Date) => {
         margin-bottom: 4rem;
         width: 100%;
       }
-      header .logo { 
-        font-size: 6.5rem; 
-        font-family: 'EB Garamond', Georgia, serif; 
-        font-weight: 500; 
-        letter-spacing: -0.02em; 
-        line-height: 1.1; 
-        margin-bottom: 0.8rem; 
+      header .logo {
+        font-size: 6.5rem;
+        font-family: 'EB Garamond', Georgia, serif;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+        margin-bottom: 0.8rem;
       }
       header .logo a,
       header .logo a:hover {
@@ -103,48 +89,6 @@ const formatDate = (date: Date) => {
       header nav a:hover {
         color: var(--text-color);
       }
-      h1 {
-        font-family: Georgia, serif;
-        font-size: 3rem;
-        font-weight: 400;
-        margin: 0 0 0.5rem 0;
-      }
-      .post-count {
-        color: var(--muted-text);
-        font-size: 0.95rem;
-        margin-bottom: 3.5rem;
-      }
-      .post-list {
-        display: flex;
-        flex-direction: column;
-        gap: 2.2rem;
-      }
-      .post-item {
-        display: flex;
-        flex-direction: column;
-        text-decoration: none;
-        color: inherit;
-        padding-left: 0.8rem;
-        border-left: 2px solid transparent;
-        transition: border-color 0.2s ease;
-      }
-      .post-item:hover {
-        border-left: 2px solid var(--accent-white) !important;
-      }
-      .post-date {
-        color: var(--muted-text);
-        font-size: 0.85rem;
-        margin-bottom: 0.2rem;
-      }
-      .post-title {
-        font-size: 1.15rem;
-        font-weight: 600;
-        margin: 0;
-      }
-      .post-item:hover .post-title {
-        text-decoration: none !important;
-        color: var(--text-color) !important;
-      }
     </style>
   </head>
   <body>
@@ -160,20 +104,6 @@ const formatDate = (date: Date) => {
           <a href="/projects">Projects</a>
         </nav>
       </header>
-
-      <section>
-        <h1>All Posts</h1>
-        <div class="post-count">{sortedPosts.length} posts</div>
-
-        <div class="post-list">
-          {sortedPosts.map((post) => (
-            <a href={`/blog/${post.slug || post.id}`} class="post-item">
-              <span class="post-date">{formatDate(post.data.pubDate)}</span>
-              <h2 class="post-title">{post.data.title}</h2>
-            </a>
-          ))}
-        </div>
-      </section>
     </main>
   </body>
 </html>
