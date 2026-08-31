@@ -1,5 +1,6 @@
 ---
 import SandBackground from '../components/SandBackground.astro';
+import PointerTrail from '../components/PointerTrail.astro';
 import Analytics from '@vercel/analytics/astro';
 import { projects } from '../data/projects';
 ---
@@ -30,13 +31,13 @@ import { projects } from '../data/projects';
       }
 
       ::selection {
-        background-color: #F4F1EA !important;
+        background-color: #A4B5C6 !important;
         color: #2C3E56 !important;
         text-shadow: none !important;
       }
 
       ::-moz-selection {
-        background-color: #F4F1EA !important;
+        background-color: #A4B5C6 !important;
         color: #2C3E56 !important;
         text-shadow: none !important;
       }
@@ -186,6 +187,7 @@ import { projects } from '../data/projects';
   </head>
   <body>
     <SandBackground />
+    <PointerTrail />
     <main>
       <header>
         <div class="logo"><a href="/">Hadi A</a></div>
