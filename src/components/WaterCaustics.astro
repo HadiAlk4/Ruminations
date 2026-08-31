@@ -1,0 +1,88 @@
+---
+---
+
+<canvas id="water-caustics"></canvas>
+
+<style>
+  #water-caustics {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(55vw, 720px);
+    height: 100vh;
+    pointer-events: none;
+    z-index: 10;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById('water-caustics') as HTMLCanvasElement;
+  const ctx = canvas?.getContext('2d');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (canvas && ctx) {
+    let cssW = 0;
+    let cssH = 0;
+    let raf = 0;
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      cssW = canvas.clientWidth;
+      cssH = window.innerHeight;
+      canvas.width = Math.round(cssW * dpr);
+      canvas.height = Math.round(cssH * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.lineCap = 'round';
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Vertical threads of light, warped by two slow sines. Where they
+    // nearly meet, additive blending makes a brighter node — the same
+    // trick actual caustics use, without looking like a screensaver.
+    const threads = Array.from({ length: 9 }, (_, i) => ({
+      base: (i + 0.6) / 10,
+      k1: 0.006 + i * 0.00035,
+      k2: 0.013 + i * 0.0005,
+      a1: 18 + (i % 3) * 6,
+      a2: 8 + (i % 4) * 3,
+      speed: 0.00012 + (i % 5) * 0.00003,
+      phase: i * 0.73,
+    }));
+
+    function frame(now: number) {
+      ctx.clearRect(0, 0, cssW, cssH);
+
+      if (!reduced.matches && !document.hidden) {
+        ctx.globalCompositeOperation = 'lighter';
+
+        for (const t of threads) {
+          ctx.beginPath();
+          const x0 = cssW * t.base;
+          for (let y = 0; y <= cssH; y += 4) {
+            const x =
+              x0 +
+              Math.sin(y * t.k1 + now * t.speed + t.phase) * t.a1 +
+              Math.sin(y * t.k2 + now * t.speed * 1.35 + t.phase) * t.a2;
+            if (y === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.strokeStyle = 'rgba(164, 181, 198, 0.045)';
+          ctx.lineWidth = 1.1;
+          ctx.stroke();
+        }
+
+        ctx.globalCompositeOperation = 'source-over';
+      }
+
+      raf = requestAnimationFrame(frame);
+    }
+
+    raf = requestAnimationFrame(frame);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) cancelAnimationFrame(raf);
+      else raf = requestAnimationFrame(frame);
+    });
+  }
+</script>

@@ -1,0 +1,92 @@
+---
+---
+
+<canvas id="water-ripples"></canvas>
+
+<style>
+  #water-ripples {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById('water-ripples') as HTMLCanvasElement;
+  const ctx = canvas?.getContext('2d');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (canvas && ctx) {
+    let w = 0;
+    let h = 0;
+    let raf = 0;
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    type Ripple = { x: number; y: number; r: number; max: number; speed: number };
+
+    const spawn = (): Ripple => ({
+      x: w * (0.55 + Math.random() * 0.38),
+      y: h * (0.12 + Math.random() * 0.76),
+      r: 4,
+      max: 90 + Math.random() * 140,
+      speed: 0.12 + Math.random() * 0.1,
+    });
+
+    // Two or three rings at a time, born on the quiet right half so they
+    // don't compete with the type. A still pool, barely touched.
+    const ripples: Ripple[] = [spawn(), spawn(), spawn()];
+
+    function frame() {
+      ctx.clearRect(0, 0, w, h);
+
+      if (!reduced.matches && !document.hidden) {
+        for (let i = 0; i < ripples.length; i++) {
+          const p = ripples[i];
+          p.r += p.speed;
+          const k = 1 - p.r / p.max;
+          if (k <= 0) {
+            ripples[i] = spawn();
+            continue;
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(164, 181, 198, ${0.16 * k * k})`;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+
+          if (p.r > 18) {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r * 0.55, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(164, 181, 198, ${0.08 * k})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+
+      raf = requestAnimationFrame(frame);
+    }
+
+    raf = requestAnimationFrame(frame);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) cancelAnimationFrame(raf);
+      else raf = requestAnimationFrame(frame);
+    });
+  }
+</script>
