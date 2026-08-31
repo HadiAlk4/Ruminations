@@ -146,13 +146,13 @@ hr {
 
 /* Universal high-contrast inverted text selection */
 *::selection, ::selection {
-  background-color: #F4F1EA !important;
+  background-color: #A4B5C6 !important;
   color: #2C3E56 !important;
   text-shadow: none !important;
 }
 
 *::-moz-selection, ::-moz-selection {
-  background-color: #F4F1EA !important;
+  background-color: #A4B5C6 !important;
   color: #2C3E56 !important;
   text-shadow: none !important;
 }

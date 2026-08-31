@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import SandBackground from '../components/SandBackground.astro';
+import PointerTrail from '../components/PointerTrail.astro';
 import Analytics from '@vercel/analytics/astro';
 
 type Props = CollectionEntry<'blog'>['data'];
@@ -43,19 +44,19 @@ const formatDate = (date: Date) => {
 
       /* Universal high-contrast inverted text selection */
       *::selection, ::selection {
-        background-color: #F4F1EA !important;
+        background-color: #A4B5C6 !important;
         color: #2C3E56 !important;
         text-shadow: none !important;
       }
 
       *::-moz-selection, ::-moz-selection {
-        background-color: #F4F1EA !important;
+        background-color: #A4B5C6 !important;
         color: #2C3E56 !important;
         text-shadow: none !important;
       }
 
       .prose *, .prose p::selection, .prose::selection {
-        background-color: #F4F1EA !important;
+        background-color: #A4B5C6 !important;
         color: #2C3E56 !important;
       }
 
@@ -112,6 +113,7 @@ const formatDate = (date: Date) => {
   </head>
   <body>
     <SandBackground />
+    <PointerTrail />
     <main>
       <header>
         <div class="logo"><a href="/">Hadi</a></div>
