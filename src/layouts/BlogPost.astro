@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import SandBackground from '../components/SandBackground.astro';
 import PointerTrail from '../components/PointerTrail.astro';
+import { url } from '../lib/url';
 import Analytics from '@vercel/analytics/astro';
 
 type Props = CollectionEntry<'blog'>['data'];
@@ -116,9 +117,9 @@ const formatDate = (date: Date) => {
     <PointerTrail />
     <main>
       <header>
-        <div class="logo"><a href="/">Hadi</a></div>
+        <div class="logo"><a href={url('/')}>Hadi</a></div>
         <nav>
-          <a href="/">Home</a>
+          <a href={url('/')}>Home</a>
           <a href="https://x.com/HadiAlk4">X</a>
         </nav>
       </header>
@@ -142,7 +143,7 @@ const formatDate = (date: Date) => {
 
       <footer>
         <div>&copy;{new Date().getFullYear()} Hadi.</div>
-        <div><a href="/">Back to all posts</a></div>
+        <div><a href={url('/')}>Back to all posts</a></div>
       </footer>
     </main>
   </body>
