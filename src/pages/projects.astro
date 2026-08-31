@@ -9,7 +9,7 @@ import { projects } from '../data/projects';
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>Projects</title>
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=IBM+Plex+Mono&display=swap" rel="stylesheet">
     <Analytics />
     <style is:global>
       :root {
@@ -137,9 +137,10 @@ import { projects } from '../data/projects';
         text-align: left;
         cursor: pointer;
       }
-      .project-title {
+      h2.project-title {
+        font-family: 'IBM Plex Mono', ui-monospace, monospace;
         font-size: 1.15rem;
-        font-weight: 600;
+        font-weight: 400;
         margin: 0;
       }
       .project-details {
@@ -155,12 +156,16 @@ import { projects } from '../data/projects';
       }
       .project-description {
         color: var(--muted-text);
+        font-family: 'IBM Plex Mono', ui-monospace, monospace;
         font-size: 0.95rem;
+        font-weight: 400;
         line-height: 1.5;
         margin: 0.75rem 0 0.6rem 0;
       }
       .project-link {
         color: var(--muted-text);
+        font-family: 'IBM Plex Mono', ui-monospace, monospace;
+        font-weight: 400;
         text-decoration: none;
         font-size: 0.9rem;
         transition: color 0.2s ease;
