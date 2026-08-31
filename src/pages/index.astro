@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import SandBackground from '../components/SandBackground.astro';
 import PointerTrail from '../components/PointerTrail.astro';
+import { url } from '../lib/url';
 import Analytics from '@vercel/analytics/astro';
 
 // Fetch the posts
@@ -153,13 +154,13 @@ const formatDate = (date: Date) => {
     <PointerTrail />
     <main>
       <header>
-        <div class="logo"><a href="/">Hadi A</a></div>
+        <div class="logo"><a href={url('/')}>Hadi A</a></div>
         <p class="bio"></p>
         <nav>
           <a href="https://x.com/HadiAlk4">X</a>
           <a href="https://github.com/HadiAlk4">GitHub</a>
           <a href="https://www.linkedin.com/in/hadialkhub">LinkedIn</a>
-          <a href="/projects">Projects</a>
+          <a href={url('/projects')}>Projects</a>
         </nav>
       </header>
 
@@ -169,7 +170,7 @@ const formatDate = (date: Date) => {
 
         <div class="post-list">
           {sortedPosts.map((post) => (
-            <a href={`/blog/${post.slug || post.id}`} class="post-item">
+            <a href={url(`/blog/${post.slug || post.id}`)} class="post-item">
               <span class="post-date">{formatDate(post.data.pubDate)}</span>
               <h2 class="post-title">{post.data.title}</h2>
             </a>

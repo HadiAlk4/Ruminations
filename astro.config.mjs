@@ -4,9 +4,16 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig, fontProviders } from 'astro/config';
 
+// GitHub Pages serves this repo as a project site under /Ruminations; Vercel
+// serves the same build at the domain root.
+const isPages = process.env.GITHUB_PAGES === 'true';
+
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://example.com',
+	site: isPages
+		? 'https://hadialk4.github.io'
+		: 'https://ruminations-nu.vercel.app',
+	base: isPages ? '/Ruminations' : '/',
 	integrations: [mdx(), sitemap()],
 	fonts: [
 		{
