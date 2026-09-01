@@ -1,0 +1,138 @@
+---
+---
+
+<canvas id="water-glint"></canvas>
+
+<style>
+  #water-glint {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById('water-glint') as HTMLCanvasElement;
+  const ctx = canvas?.getContext('2d');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (canvas && ctx) {
+    let w = 0;
+    let h = 0;
+    let raf = 0;
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    type Shard = {
+      x: number;
+      y: number;
+      len: number;
+      thick: number;
+      vx: number;
+      phase: number;
+      opacity: number;
+      wobble: number;
+    };
+
+    const spawn = (y?: number, x?: number): Shard => ({
+      x: x ?? Math.random() * w,
+      y: y ?? h * (0.08 + Math.random() * 0.84),
+      len: 56 + Math.random() * 130,
+      thick: 1.4 + Math.random() * 2.2,
+      vx: (Math.random() < 0.5 ? -1 : 1) * (0.14 + Math.random() * 0.18),
+      phase: Math.random() * Math.PI * 2,
+      opacity: 0.16 + Math.random() * 0.14,
+      wobble: 0.25 + Math.random() * 0.45,
+    });
+
+    // A few broken lines — clusters of tapered shards that travel together,
+    // plus a handful of loners. Same idea as the still, segmented gleam.
+    const shards: Shard[] = [];
+    const rows = 5;
+    for (let r = 0; r < rows; r++) {
+      const y = h * (0.14 + r * 0.16) + (Math.random() - 0.5) * 28;
+      const n = 3 + Math.floor(Math.random() * 3);
+      let cursor = w * (0.08 + Math.random() * 0.55);
+      const dir = Math.random() < 0.5 ? -1 : 1;
+        const speed = (0.16 + Math.random() * 0.16) * dir;
+      for (let i = 0; i < n; i++) {
+        const s = spawn(y, cursor);
+        s.vx = speed;
+        s.y = y + (Math.random() - 0.5) * 6;
+        shards.push(s);
+        cursor += s.len * 0.55 + 18 + Math.random() * 28;
+      }
+    }
+    for (let i = 0; i < 7; i++) shards.push(spawn());
+
+    function drawShard(s: Shard, now: number, alpha: number, thickMul: number, rgb: string) {
+      const half = s.len / 2;
+      const wave = now * 0.0014 + s.phase;
+      const thick = s.thick * thickMul;
+      const steps = 14;
+
+      ctx.beginPath();
+      for (let i = 0; i <= steps; i++) {
+        const u = i / steps;
+        const px = s.x - half + u * s.len;
+        const env = Math.sin(u * Math.PI);
+        const rip = Math.sin(u * Math.PI * 3.2 + wave) * s.wobble * env;
+        const py = s.y - env * thick + rip;
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      for (let i = steps; i >= 0; i--) {
+        const u = i / steps;
+        const px = s.x - half + u * s.len;
+        const env = Math.sin(u * Math.PI);
+        const rip = Math.sin(u * Math.PI * 3.2 + wave + 0.5) * s.wobble * 0.55 * env;
+        ctx.lineTo(px, s.y + env * thick + rip);
+      }
+      ctx.closePath();
+      ctx.fillStyle = `rgba(${rgb}, ${alpha})`;
+      ctx.fill();
+    }
+
+    function frame(now: number) {
+      ctx.clearRect(0, 0, w, h);
+
+      if (!reduced.matches && !document.hidden) {
+        for (const s of shards) {
+          s.x += s.vx;
+          s.y += Math.sin(now * 0.00045 + s.phase) * 0.05;
+          s.len += Math.sin(now * 0.0007 + s.phase) * 0.04;
+
+          const wrap = s.len * 0.6 + 24;
+          if (s.x > w + wrap) s.x = -wrap;
+          if (s.x < -wrap) s.x = w + wrap;
+
+          const pulse = 0.72 + 0.28 * Math.sin(now * 0.0009 + s.phase);
+          drawShard(s, now, s.opacity * pulse * 0.28, 2.4, '164, 181, 198');
+          drawShard(s, now, s.opacity * pulse, 1, '210, 220, 228');
+        }
+      }
+
+      raf = requestAnimationFrame(frame);
+    }
+
+    raf = requestAnimationFrame(frame);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) cancelAnimationFrame(raf);
+      else raf = requestAnimationFrame(frame);
+    });
+  }
+</script>

@@ -1,0 +1,124 @@
+---
+import SandBackground from './SandBackground.astro';
+import WaterCaustics from './WaterCaustics.astro';
+import WaterBanks from './WaterBanks.astro';
+import WaterGlint from './WaterGlint.astro';
+
+const studies = [
+  { id: 'sand', label: 'sand' },
+  { id: 'caustics', label: 'caustics' },
+  { id: 'banks', label: 'banks' },
+  { id: 'glint', label: 'glint' },
+] as const;
+---
+
+<div class="study-layer is-on" data-study="sand"><SandBackground /></div>
+<div class="study-layer" data-study="caustics"><WaterCaustics /></div>
+<div class="study-layer" data-study="banks"><WaterBanks /></div>
+<div class="study-layer" data-study="glint"><WaterGlint /></div>
+
+<aside class="study-picker" aria-label="Background studies">
+  <p class="kicker">studies</p>
+  <nav>
+    {studies.map((study) => (
+      <button type="button" data-study-link={study.id}>
+        {study.label}
+      </button>
+    ))}
+  </nav>
+</aside>
+
+<script>
+  const STORAGE = 'ruminations-study';
+  const ids = ['sand', 'caustics', 'banks', 'glint'];
+
+  function read() {
+    const saved = localStorage.getItem(STORAGE);
+    return ids.includes(saved ?? '') ? saved! : 'sand';
+  }
+
+  function apply(id: string) {
+    document.querySelectorAll('[data-study]').forEach((el) => {
+      el.classList.toggle('is-on', el.getAttribute('data-study') === id);
+    });
+    document.querySelectorAll('[data-study-link]').forEach((el) => {
+      if (el.getAttribute('data-study-link') === id) el.setAttribute('aria-current', 'true');
+      else el.removeAttribute('aria-current');
+    });
+    window.dispatchEvent(new Event('resize'));
+  }
+
+  apply(read());
+
+  document.querySelectorAll('[data-study-link]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const id = el.getAttribute('data-study-link');
+      if (!id) return;
+      localStorage.setItem(STORAGE, id);
+      apply(id);
+    });
+  });
+</script>
+
+<style>
+  .study-layer {
+    display: none;
+  }
+  .study-layer.is-on {
+    display: block;
+  }
+  .study-picker {
+    position: fixed;
+    left: 1.5rem;
+    bottom: 1.5rem;
+    z-index: 20;
+    pointer-events: auto;
+    max-width: 220px;
+  }
+  .study-picker .kicker {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 1.05rem;
+    color: var(--text-color);
+    margin: 0 0 0.55rem 0;
+    letter-spacing: 0.01em;
+  }
+  .study-picker nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.28rem;
+  }
+  .study-picker button {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--muted-text);
+    font: inherit;
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  .study-picker button:hover,
+  .study-picker button[aria-current="true"] {
+    color: var(--text-color);
+  }
+  .study-picker button[aria-current="true"] {
+    font-style: italic;
+  }
+  @media (max-width: 900px) {
+    .study-picker {
+      left: 1rem;
+      right: 1rem;
+      bottom: 0;
+      max-width: none;
+      padding: 0.7rem 0 0.9rem;
+      background: var(--bg-color);
+    }
+    .study-picker nav {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.7rem 1.1rem;
+    }
+  }
+</style>
