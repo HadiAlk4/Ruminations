@@ -1,0 +1,110 @@
+---
+---
+
+<canvas id="water-banks"></canvas>
+
+<style>
+  #water-banks {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById('water-banks') as HTMLCanvasElement;
+  const ctx = canvas?.getContext('2d');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  if (canvas && ctx) {
+    let w = 0;
+    let h = 0;
+    let band = 180;
+    let raf = 0;
+
+    function gutters() {
+      const content = 650;
+      const gutter = Math.max(0, (w - content) / 2);
+      band = Math.min(96, Math.max(52, gutter * 0.55));
+    }
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.lineCap = 'round';
+      gutters();
+    }
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    type Side = 'left' | 'right';
+
+    const spawn = (side: Side, y?: number) => {
+      const center = side === 'left' ? band * 0.48 : w - band * 0.48;
+      const spread = band * 0.38;
+      return {
+        side,
+        x: center + (Math.random() + Math.random() - 1) * spread,
+        y: y ?? Math.random() * h,
+        size: Math.random() * 0.7 + 0.45,
+        speed: Math.random() * 0.1 + 0.07,
+        opacity: Math.random() * 0.16 + 0.12,
+        phase: Math.random() * Math.PI * 2,
+        len: Math.random() * 7 + 5,
+      };
+    };
+
+    const particles = [
+      ...Array.from({ length: 110 }, () => spawn('left')),
+      ...Array.from({ length: 110 }, () => spawn('right')),
+    ];
+
+    function frame(now: number) {
+      ctx.clearRect(0, 0, w, h);
+
+      if (!reduced.matches && !document.hidden) {
+        for (const p of particles) {
+          const rising = p.side === 'left';
+          p.y += rising ? -p.speed : p.speed;
+          p.x += Math.sin(now * 0.0009 + p.phase) * 0.22;
+
+          if (p.side === 'left') {
+            p.x = Math.min(band - 3, Math.max(4, p.x));
+          } else {
+            p.x = Math.min(w - 4, Math.max(w - band + 3, p.x));
+          }
+
+          if (rising && p.y < -10) Object.assign(p, spawn(p.side, h + 10));
+          if (!rising && p.y > h + 10) Object.assign(p, spawn(p.side, -10));
+
+          ctx.strokeStyle = `rgba(164, 181, 198, ${p.opacity})`;
+          ctx.lineWidth = p.size;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(
+            p.x + Math.sin(now * 0.0016 + p.phase) * 0.8,
+            p.y + (rising ? p.len : -p.len),
+          );
+          ctx.stroke();
+        }
+      }
+
+      raf = requestAnimationFrame(frame);
+    }
+
+    raf = requestAnimationFrame(frame);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) cancelAnimationFrame(raf);
+      else raf = requestAnimationFrame(frame);
+    });
+  }
+</script>
